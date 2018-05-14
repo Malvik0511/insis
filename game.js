@@ -5,7 +5,7 @@ window.onload = function(){
 			this.maxX = maxX - 1;
 			this.maxY = maxY - 1;
 			this.xCoord = Math.round(Math.random() * this.maxX);
-			this.yCoord = Math.round(Math.random() * this.maxY)
+			this.yCoord = Math.round(Math.random() * this.maxY);
 			this.score = Math.round(Math.random() * 2) + 1;
 			
 		}		
@@ -20,19 +20,18 @@ window.onload = function(){
 		}
 		
 		move(dist){
-			if (dist === "ArrowLeft" || dist  === "ArrowRight"){
-				let newY = (dist  === "ArrowLeft") ? this.yCoord - 1 : this.yCoord + 1
-				//console.log(this.isInto(newY, this.maxY))
-				this.yCoord = (this.isInto(newY, this.maxY)) ? newY : this.yCoord;
+			if (dist === "ArrowLeft" || dist === "Numpad4" || dist  === "ArrowRight" || dist === "Numpad6"){
+				let newY = (dist  === "ArrowLeft" || dist === "Numpad4") ? this.yCoord - 1 : this.yCoord + 1
+				this.yCoord = (this.isInField(newY, this.maxY)) ? newY : this.yCoord;
 			}
-			else if (dist === "ArrowDown" || dist === "ArrowUp"){
-				let newX = (dist  === "ArrowUp") ? this.xCoord - 1: this.xCoord + 1;
-				this.xCoord = (this.isInto(newX, this.maxX)) ? newX : this.xCoord;
+			else if (dist === "ArrowDown" || dist === "Numpad2" || dist === "ArrowUp" || dist === "Numpad8"){
+				let newX = (dist  === "ArrowUp" || dist === "Numpad8") ? this.xCoord - 1: this.xCoord + 1;
+				this.xCoord = (this.isInField(newX, this.maxX)) ? newX : this.xCoord;
 			}
 			return this;
 		}
 		
-		isInto(val, maxVal){
+		isInField(val, maxVal){
 			if (val >= 0 && val <= maxVal) return true;
 			return false;
 		}
@@ -49,7 +48,8 @@ window.onload = function(){
 			this.width = width;
 			this.height = height;
 			this.aim = new AimPoint(this.width, this.height);
-			this.player = new PlayerPoint(this.width, this.height)
+			this.player = new PlayerPoint(this.width, this.height);
+			this.started = false;
 		}
 		
 		drowGameField(){
@@ -67,53 +67,50 @@ window.onload = function(){
 		}
 		
 		startGame(){
-			this.drowGameField().drowPlayer().drowAim();
+			this.drowPoint("player").drowPoint("aim");
+			this.started = true;
 			return this;
 		}
 		
-		endGame(){
-			alert('Ваш результат: ' + this.player.score + " баллов")
-		}
-		
-		drowPlayer(){
-			let {xCoord, yCoord} = this.player;
-			document.getElementById('cell-' + xCoord + "-" + yCoord).classList.add("app__cell_player")	
+		drowPoint(target){
+			let {xCoord, yCoord} = this[target],
+				point = document.getElementById('cell-' + xCoord + "-" + yCoord);
+			point.classList.add("app__cell_" + target);
+			this.tryUpdateAim();	
+			point.innerHTML = this[target].score;
 			return this;
 		}
 		
-		wipeOFPlayer(){
-			let {xCoord, yCoord} = this.player;
-			document.getElementById('cell-' + xCoord + "-" + yCoord).classList.remove("app__cell_player");	
+		wipeOFPoint(target){
+			let {xCoord, yCoord} = this[target],
+				point = document.getElementById('cell-' + xCoord + "-" + yCoord);
+			point.innerHTML = "";
+			point.classList.remove("app__cell_" + target);	
 			return this;
 		}
 		
-		move(dist){
+		playerMove(dist){
 			this.player.move(dist);
 			return this;
 		}
-		
-		stroke(dist){
-			this.wipeOFPlayer().move(dist).drowPlayer().checkUpdateAim();
-		}
-		
-		drowAim(){
-			let {xCoord, yCoord} = this.aim;
-			document.getElementById('cell-' + xCoord + "-" + yCoord).classList.add("app__cell_aim");	
+
+		playerStroke(dist){
+			this.wipeOFPoint("player").playerMove(dist).drowPoint("player");
 			return this;
 		}
+		
+		circle(dist){
+			if (this.started){
+				this.playerStroke(dist);
+			}
+		}		
 		
 		newAim(){
 			this.aim = new AimPoint(this.width, this.height);
 			return this;
 		}
 		
-		wipeOFAim(){
-			let {xCoord, yCoord} = this.aim;
-			document.getElementById('cell-' + xCoord + "-" + yCoord).classList.remove("app__cell_aim");	
-			return this;
-		}
-		
-		isAim(){
+		isAimAttain(){
 			if (this.player.xCoord === this.aim.xCoord){
 				if (this.player.yCoord === this.aim.yCoord){
 					return true;
@@ -128,9 +125,9 @@ window.onload = function(){
 			return this;
 		}
 		
-		checkUpdateAim(){
-			if (this.isAim()){
-				this.wipeOFAim().addScore().newAim().drowAim();
+		tryUpdateAim(){
+			if (this.isAimAttain()){
+				this.wipeOFPoint("aim").addScore().newAim().drowPoint("aim");
 			}
 			return this;
 		}
@@ -140,19 +137,30 @@ window.onload = function(){
 		
 		
 	}
+	
+	let game = null;
+	let body = document.getElementsByTagName('body')[0];
+	let startBtn = document.getElementsByClassName('app__start')[0];
 	play();
 	
 	function play(){	
-		let game = new Mediator().startGame();
-		let target = document.getElementsByTagName('body')[0];
-		target.addEventListener('keydown', function(e){
-			game.stroke(e.code);
-		})
+		game = new Mediator(30, 30).drowGameField();		
+	}
+
+
+	body.addEventListener('keydown', function(e){
+		e.stopPropagation();
+		game.circle(e.code);
+	})
+
+	startBtn.addEventListener('click', function(){
+		game.startGame();
 		setTimeout(function(){
 			alert ('Ваш результат: ' + game.player.score + ' балл(ов)')
 			play();
+
 		},60000);
-	}
+	});
 		
 };
 
