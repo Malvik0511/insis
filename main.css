@@ -1,0 +1,24 @@
+.app__field{
+	width:100%;
+	height:50vh;
+}
+
+.app__field-line{
+	height:20px;
+	display:flex;
+	justify-content:center;
+}
+
+.app__cell{
+	height:100%;
+	width:20px;
+	border:1px solid black;
+}
+
+.app__cell_player{
+	background-color:green;
+}
+
+.app__cell_aim{
+	background-color:red;
+}
