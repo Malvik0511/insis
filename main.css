@@ -49,8 +49,8 @@ body{
 			color:white;
 		}
 		.app__btn_stop{
-			border:1px solid #d43f3a;
-			background: #d9534f;
+			background-color:#f0ad4e;
+			border:1px solid #eea236;;
 			color:white;
 		}
 		
@@ -92,13 +92,13 @@ body{
 					
 					.app__cell_player{
 						background-color:#5cb85c;
-						border:1px solid #4cae4c;
+						border:2px solid #4cae4c;
 						box-sizing: border-box;
 					}
 					
-					.app__cell_aim{
-						background-color:#d9534f;
-						border:1px solid #d43f3a;
+					.app__cell_aim{=
+						background-color:#f0ad4e;
+						border:2px solid #eea236;
 						box-sizing: border-box;
 					}
 						.app__score{
