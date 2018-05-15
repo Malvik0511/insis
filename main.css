@@ -1,13 +1,23 @@
 body{
-	background:rgb(248,248,255)
+	background:	url('resource/img2.jpg'),
+				rgb(248,248,255);
+	width:100vw;
+	margin:0;
+	padding:0;
 }
 
 .app__header{
 	text-align: center;
-	background:rgb(220,220,220);
+	background:	url('resource/img1.jpg'),
+				rgb(220,220,220);
 	height:50px;
 	padding:20px 0px;
+	border-bottom:3px solid white;
 }
+	.app__title{
+		color:white;
+		text-shadow: 1px 1px 1px black;
+	}
 
 .app__container{
 	width:40%;
@@ -34,12 +44,14 @@ body{
 		}
 		
 		.app__btn_start{
-			background: green;
+			background-color:#5cb85c;
+			border:1px solid #4cae4c;
 			color:white;
 		}
 		.app__btn_stop{
-			background: red;
-			color:black;
+			border:1px solid #d43f3a;
+			background: #d9534f;
+			color:white;
 		}
 		
 		.app__timer-container{
@@ -79,18 +91,19 @@ body{
 					}	
 					
 					.app__cell_player{
-						background-color:green;
-						color: white;
-						border:1px solid black;
+						background-color:#5cb85c;
+						border:1px solid #4cae4c;
 						box-sizing: border-box;
 					}
 					
 					.app__cell_aim{
-						background-color:red;
-						border:1px solid black;
+						background-color:#d9534f;
+						border:1px solid #d43f3a;
 						box-sizing: border-box;
 					}
 						.app__score{
+							color:white;
+							text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 							position:absolute;
 							left: 50%;
 							top:50%;
