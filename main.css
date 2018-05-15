@@ -1,65 +1,98 @@
+body{
+	background:rgb(248,248,255)
+}
+
 .app__header{
 	text-align: center;
-}
-
-.app__btn{
-	display: block;
-	width:300px;
+	background:rgb(220,220,220);
 	height:50px;
-	margin:2vh auto;
-	border-radius:5px;
+	padding:20px 0px;
 }
 
-.app__btn:hover{
-	opacity: 0.9;
-	cursor:pointer;
+.app__container{
+	width:40%;
+	margin:auto;
+	display:flex
+	flex-wrap:wrap;
 }
+	.app__control{
+		flex:0 0 100%;
+		display:flex;
+		justify-content:space-between;
+		align-items:center;
+		padding:15px 0px;
+	}
+		.app__btn{
+			flex: 0 0 20%;
+			border-radius:5px;
+			padding: 20px 0px;
+		}
+		
+		.app__btn:hover{
+			opacity: 0.9;
+			cursor:pointer;
+		}
+		
+		.app__btn_start{
+			background: green;
+			color:white;
+		}
+		.app__btn_stop{
+			background: red;
+			color:black;
+		}
+		
+		.app__timer-container{
+			flex:0 0 10%;
+			text-align:center;
+		}
 
-.app__btn_start{
-	background: green;
-	color:white;
-}
-
-.app__btn_stop{
-	background: red;
-	color:black;
-}
-
-.app__field{
-	width:100%;
-	height:50vh;
-}
-
-.app__field-line{
-	height:40px;
-	display:flex;
-	justify-content:center;
-}
-
-.app__cell{
-	height:100%;
-	width:40px;
-	background: Gainsboro;
-}
-
-.app__cell_player{
-	background-color:green;
-	color: white;
-	position: relative;
-	border:1px solid black;
-	box-sizing: border-box;
-}
-
-.app__cell_aim{
-	background-color:red;
-	position:relative;
-	border:1px solid black;
-	box-sizing: border-box;
-}
-
-.app__score{
-	position:absolute;
-	left: 50%;
-	top:50%;
-	transform: translate(-50%, -50%);
-}
+	.app__game-field-container{
+		flex:0 0 100%;
+		display:flex;
+		flex-wrap:wrap;
+	}
+		.app__field{
+			flex:0 0 100%;
+			display:flex;
+			flex-wrap:wrap;
+			border:1px solid black;
+		}
+			.app__field-line{
+				flex:0 0 100%;
+				display:flex;
+				justify-content:center;
+			}				
+				.app__cell-container-wrapper{
+					overflow:hidden;
+					position:relative;
+					width:100%;
+					padding-bottom:100%;
+				}
+					.app__cell{
+						position:absolute;
+						top:0;
+						left:0;
+						width:100%;
+						height:100%;
+						background: Gainsboro;
+					}	
+					
+					.app__cell_player{
+						background-color:green;
+						color: white;
+						border:1px solid black;
+						box-sizing: border-box;
+					}
+					
+					.app__cell_aim{
+						background-color:red;
+						border:1px solid black;
+						box-sizing: border-box;
+					}
+						.app__score{
+							position:absolute;
+							left: 50%;
+							top:50%;
+							transform: translate(-50%, -50%);
+						}

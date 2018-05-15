@@ -4,10 +4,9 @@ window.onload = function(){
 		constructor(maxX = 7, maxY = 7){
 			this.maxX = maxX - 1;
 			this.maxY = maxY - 1;
-			this.xCoord = Math.round(Math.random() * this.maxX);
-			this.yCoord = Math.round(Math.random() * this.maxY);
-			this.score = Math.round(Math.random() * 2) + 1;
-			
+			this.xCoord = Math.round(Math.random()*this.maxX);
+			this.yCoord = Math.round(Math.random()*this.maxY);
+			this.score = Math.round(Math.random() * 2) + 1;			
 		}		
 	}
 	
@@ -21,17 +20,18 @@ window.onload = function(){
 		
 		move(dist){
 			if (dist === "ArrowLeft" || dist === "Numpad4" || dist  === "ArrowRight" || dist === "Numpad6"){
-				let newY = (dist  === "ArrowLeft" || dist === "Numpad4") ? this.yCoord - 1 : this.yCoord + 1;
-				this.yCoord = (this.isInField(newY, this.maxY)) ? newY : this.yCoord;
+				let newX = (dist  === "ArrowLeft" || dist === "Numpad4") ? this.xCoord - 1 : this.xCoord + 1;
+				this.xCoord = (this.isInField(newX, this.maxX)) ? newX : this.xCoord;
 			}
 			else if (dist === "ArrowDown" || dist === "Numpad2" || dist === "ArrowUp" || dist === "Numpad8"){
-				let newX = (dist  === "ArrowUp" || dist === "Numpad8") ? this.xCoord - 1: this.xCoord + 1;
-				this.xCoord = (this.isInField(newX, this.maxX)) ? newX : this.xCoord;
+				let newY = (dist  === "ArrowUp" || dist === "Numpad8") ? this.yCoord - 1: this.yCoord + 1;
+				this.yCoord = (this.isInField(newY, this.maxY)) ? newY : this.yCoord;
 			}
 			return this;
 		}
 		
 		isInField(val, maxVal){
+			//console.log(val, maxVal)
 			if (val >= 0 && val <= maxVal) return true;
 			return false;
 		}
@@ -54,18 +54,27 @@ window.onload = function(){
 			this.stopWatch = null;
 		}
 		
+		resizeGameField(){
+			let cellSize = 100/this.width+"%";		
+			let cells = document.getElementsByClassName("app__cell-container");
+			Array.prototype.forEach.call(cells, cell => {
+				cell.style.width = cellSize ;
+			})		
+			return this;
+		}
+		
 		drowGameField(){
 			let field = "<div class = 'app__field'>";
 			for (var i = 0; i < this.height; i++){
 				field += "<div class = 'app__field-line'>";
 				for (var j = 0; j < this.width; j++){
-					field += "<div class = 'app__cell' id = 'cell-" + i + "-" + j + "'" + "></div>";
+					field += "<div class = 'app__cell-container'><div class = 'app__cell-container-wrapper'><div class = 'app__cell' id = 'cell-" + i + "-" + j + "'" + "></div></div></div>";
 				}
 				field += "</div>";
 			}
 			field += "</div>";			
 			document.getElementsByClassName('app__game-field-container')[0].innerHTML = field;
-			this.updateMeter();
+			this.updateMeter().resizeGameField();
 			return this;
 		}
 		
@@ -122,8 +131,9 @@ window.onload = function(){
 		}
 		
 		drowPoint(target){
-			let {xCoord, yCoord} = this[target],
-				point = document.getElementById('cell-' + xCoord + "-" + yCoord);
+			let {xCoord, yCoord} = this[target];
+			console.log(xCoord,  yCoord, target)
+				let point = document.getElementById('cell-' + yCoord + "-" + xCoord);
 			point.classList.add("app__cell_" + target);
 			this.tryUpdateAim();	
 			point.innerHTML = "<div class = 'app__score'>" + this[target].score + "</div>";
@@ -132,7 +142,7 @@ window.onload = function(){
 		
 		wipeOFPoint(target){
 			let {xCoord, yCoord} = this[target],
-				point = document.getElementById('cell-' + xCoord + "-" + yCoord);
+				point = document.getElementById('cell-' + yCoord + "-" + xCoord);
 			point.innerHTML = "";
 			point.classList.remove("app__cell_" + target);	
 			return this;
@@ -178,10 +188,10 @@ window.onload = function(){
 	play();
 	
 	function play(){	
-		game = new Mediator(15, 15).drowGameField();		
+		game = new Mediator(12, 12).drowGameField();	
 	}
 	
-	function playRes(){)
+	function playRes(){
 		game.stop();
 		clearTimeout(timer);
 		alert ('Ваш результат: ' + game.player.score + ' балл(ов)');
