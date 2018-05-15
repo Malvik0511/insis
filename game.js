@@ -1,4 +1,10 @@
 window.onload = function(){	
+	/*
+		Класс игровой цели. 
+		Определяет текущие координаты, 
+		максимально-возможное значение координат, 
+		игровую ценность экземпляра
+	*/
 	class AimPoint {
 		constructor(maxX = 7, maxY = 7){
 			this._maxX = maxX - 1;
@@ -9,6 +15,10 @@ window.onload = function(){
 		}		
 	}
 	
+	/*
+	 Класс игрока.
+	 Определяет методы перемещения и прибавления очков
+	*/
 	class PlayerPoint extends AimPoint{
 		constructor(maxX, maxY, xCoord = 0, yCoord = 0){
 			super(maxX,  maxY)
@@ -41,7 +51,11 @@ window.onload = function(){
 		}
 	}
 	
-	
+	/*
+	Класс посредник, реализует игру.
+	Определяет размер поля, длительность игры, текущую цель и игрока
+	Определяет основные методы: отрисовка поля, начало игры, конец игры, сделать ход
+	*/
 	class Mediator{
 		constructor(width = 7, height = 7, gameDuration = 60){			
 			this._width = (width >= 2) ? width: 2;
