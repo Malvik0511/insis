@@ -21,7 +21,7 @@ window.onload = function(){
 		
 		move(dist){
 			if (dist === "ArrowLeft" || dist === "Numpad4" || dist  === "ArrowRight" || dist === "Numpad6"){
-				let newY = (dist  === "ArrowLeft" || dist === "Numpad4") ? this.yCoord - 1 : this.yCoord + 1
+				let newY = (dist  === "ArrowLeft" || dist === "Numpad4") ? this.yCoord - 1 : this.yCoord + 1;
 				this.yCoord = (this.isInField(newY, this.maxY)) ? newY : this.yCoord;
 			}
 			else if (dist === "ArrowDown" || dist === "Numpad2" || dist === "ArrowUp" || dist === "Numpad8"){
@@ -44,12 +44,14 @@ window.onload = function(){
 	
 	
 	class Mediator{
-		constructor(width = 7, height = 7){
+		constructor(width = 7, height = 7, gameDuration = 60){
 			this.width = width;
 			this.height = height;
 			this.aim = new AimPoint(this.width, this.height);
 			this.player = new PlayerPoint(this.width, this.height);
 			this.started = false;
+			this.dur = gameDuration;
+			this.stopWatch = null;
 		}
 		
 		drowGameField(){
@@ -63,12 +65,59 @@ window.onload = function(){
 			}
 			field += "</div>";			
 			document.getElementsByClassName('app__game-field-container')[0].innerHTML = field;
+			this.updateMeter();
 			return this;
 		}
 		
-		startGame(){
-			this.drowPoint("player").drowPoint("aim");
+		start(){
 			this.started = true;
+			this.drowPoint("player").drowPoint("aim").changeBtnStatus().meter();	
+			return this;			
+		}
+		
+		stop(){
+			this.started = false;
+			clearInterval(this.stopWatch);
+			this.wipeOFPoint("player").wipeOFPoint("aim").changeBtnStatus();
+			return this;
+		}
+		
+		nextStage(dist){
+			if (this.started){
+				this.wipeOFPoint("player").playerMove(dist).drowPoint("player");
+			}
+		}	
+		
+		updateMeter(time = this.dur){
+			let timerField = document.getElementsByClassName('app__timer')[0];
+			timerField.innerHTML = time;
+			return this;
+		}
+		
+		meter(){	
+			let time = this.dur;
+			this.stopWatch = setInterval(() =>{
+				time--;			
+				this.updateMeter(time);
+				if (this.dur == 0){
+					clearInterval(this.stopWatch);
+				}
+			}, 1000)
+			return this;
+		}
+		
+		changeBtnStatus(){
+			let btn = document.getElementsByClassName('app__btn')[0];
+			if (this.started){
+				btn.innerHTML = "СТОП";
+				btn.classList.remove("app__btn_start");
+				btn.classList.add("app__btn_stop");
+			}
+			else{
+				btn.innerHTML = "СТAРТ";
+				btn.classList.remove("app__btn_stop");
+				btn.classList.add("app__btn_start");
+			}
 			return this;
 		}
 		
@@ -92,18 +141,7 @@ window.onload = function(){
 		playerMove(dist){
 			this.player.move(dist);
 			return this;
-		}
-
-		playerStroke(dist){
-			this.wipeOFPoint("player").playerMove(dist).drowPoint("player");
-			return this;
-		}
-		
-		circle(dist){
-			if (this.started){
-				this.playerStroke(dist);
-			}
-		}		
+		}	
 		
 		newAim(){
 			this.aim = new AimPoint(this.width, this.height);
@@ -121,7 +159,6 @@ window.onload = function(){
 		
 		addScore(){
 			this.player.addScore(this.aim.score);
-			console.log(this.player.score)
 			return this;
 		}
 		
@@ -130,36 +167,43 @@ window.onload = function(){
 				this.wipeOFPoint("aim").addScore().newAim().drowPoint("aim");
 			}
 			return this;
-		}
-		
-		
-		
-		
-		
+		}		
 	}
 	
-	let game = null;
-	let body = document.getElementsByTagName('body')[0];
-	let startBtn = document.getElementsByClassName('app__btn')[0];
+	var timer;
+	let	game = null,
+		body = document.getElementsByTagName('body')[0],
+		btn = document.getElementsByClassName('app__btn')[0];
+		
 	play();
 	
 	function play(){	
 		game = new Mediator(15, 15).drowGameField();		
 	}
-
-
+	
+	function playRes(){)
+		game.stop();
+		clearTimeout(timer);
+		alert ('Ваш результат: ' + game.player.score + ' балл(ов)');
+		play();
+	}
+	
 	body.addEventListener('keydown', function(e){
 		e.stopPropagation();
-		game.circle(e.code);
+		game.nextStage(e.code);
 	})
 
-	startBtn.addEventListener('click', function(){
-		game.startGame();
-		setTimeout(function(){
-			alert ('Ваш результат: ' + game.player.score + ' балл(ов)')
-			play();
-
-		},60000);
+	btn.addEventListener('click', function(e){
+		let btn = e.target, dur = game.dur*1000;
+		if (!game.started){
+			game.start();
+			timer = setTimeout(function(){
+				playRes()
+			},dur);
+		}
+		else {
+			playRes()
+		}
 	});
 		
 };
