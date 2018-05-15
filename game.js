@@ -77,7 +77,7 @@ window.onload = function(){
 				point = document.getElementById('cell-' + xCoord + "-" + yCoord);
 			point.classList.add("app__cell_" + target);
 			this.tryUpdateAim();	
-			point.innerHTML = this[target].score;
+			point.innerHTML = "<div class = 'app__score'>" + this[target].score + "</div>";
 			return this;
 		}
 		
@@ -140,11 +140,11 @@ window.onload = function(){
 	
 	let game = null;
 	let body = document.getElementsByTagName('body')[0];
-	let startBtn = document.getElementsByClassName('app__start')[0];
+	let startBtn = document.getElementsByClassName('app__btn')[0];
 	play();
 	
 	function play(){	
-		game = new Mediator(30, 30).drowGameField();		
+		game = new Mediator(15, 15).drowGameField();		
 	}
 
 
