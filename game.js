@@ -12,7 +12,11 @@ window.onload = function(){
 			this.xCoord = Math.round(Math.random()*this._maxX);
 			this.yCoord = Math.round(Math.random()*this._maxY);
 			this.score = Math.round(Math.random() * 2) + 1;			
-		}		
+		}	
+
+		getScore(){
+			return this.score
+		}	
 	}
 	
 	/*
@@ -98,6 +102,10 @@ window.onload = function(){
 			if (this.started){
 				this.wipeOffPoint("player").playerMove(dist).drowPoint("player");
 			}
+		}
+
+		getPlayerScore(){
+			return this.player.getScore();
 		}	
 		
 		updateMeter(time = this.dur){
@@ -173,7 +181,7 @@ window.onload = function(){
 		}
 		
 		addScore(){
-			this.player.addScore(this.aim.score);
+			this.player.addScore(this.aim.getScore());
 			return this;
 		}
 		
@@ -208,7 +216,7 @@ window.onload = function(){
 	})
 
 	btn.addEventListener('click', function(e){
-		let btn = e.target, dur = game.dur * 1000;
+		let dur = game.dur * 1000;
 		if (!game.started){
 			game.start();
 			timer = setTimeout(function(){
@@ -228,7 +236,7 @@ window.onload = function(){
 	function gameResult(){
 		game.stop();
 		clearTimeout(timer);
-		alert ('Ваш результат: ' + game.player.score + ' балл(ов)');
+		alert ('Ваш результат: ' + game.getPlayerScore() + ' балл(ов)');
 		initGame();
 	}		
 };
